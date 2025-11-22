@@ -1,15 +1,14 @@
 use axum::{Json, Router, routing::post};
 use serde::Deserialize;
-use crate::error::{Error, Result};
 use serde_json::{Value, json};
+use crate::error::{Result, Error};
 
 pub fn routes() -> Router {
     Router::new()
-        .route("/api/login", post(api_login))
+        .route("/api/login", post(login_api))
 }
 
-async fn api_login(payload: Json<LoginPayload>) -> Result<Json<Value>> {
-
+async fn login_api(payload: Json<PayloadLogin>) -> Result<Json<Value>> {
     if payload.name != "Danton" || payload.pwd != "123" {
         return Err(Error::LoginFail)
     }
@@ -17,7 +16,7 @@ async fn api_login(payload: Json<LoginPayload>) -> Result<Json<Value>> {
     let body = Json(json!(
         {
             "result": {
-                "sucess": true
+                "success": true
             }
         }
     ));
@@ -26,7 +25,7 @@ async fn api_login(payload: Json<LoginPayload>) -> Result<Json<Value>> {
 }
 
 #[derive(Debug, Deserialize)]
-struct LoginPayload {
+struct PayloadLogin {
     name: String,
     pwd: String,
 }

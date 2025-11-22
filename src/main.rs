@@ -1,8 +1,8 @@
 use tokio::net::TcpListener;
 use tracing::{Level, info};
 
-mod error2;
-mod web2;
+mod error;
+mod web;
 
 #[tokio::main]
 async fn main() {
@@ -13,7 +13,7 @@ async fn main() {
         .with_max_level(Level::INFO)
         .init();
 
-    info!(%addr, "Listening on:");
+    info!("Listening on addr {:?}", listener.local_addr().unwrap());
 
-    axum::serve(listener, web2::routes_login2::routes()).await.unwrap();
+    axum::serve(listener, web::routes_login::routes()).await.unwrap();
 }
