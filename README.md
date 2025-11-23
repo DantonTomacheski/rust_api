@@ -24,7 +24,15 @@ serde_json = "1.0"          # Suporte JSON
 tracing = "0.1.41"          # Logging
 tracing-subscriber = "0.3.20" # Subscriber para tracing
 tower-http = "0.6.6"        # Middleware HTTP
+tower-cookies = "0.11.0"    # Gerenciamento de Cookies
 uuid = "1.18.1"             # Geração de UUIDs
+```
+
+### Dev Dependencies
+
+```toml
+httpc-test = "0.1.10"       # Testes HTTP
+anyhow = "1.0.100"          # Tratamento de erros
 ```
 
 ## 🏗️ Estrutura do Projeto
@@ -41,6 +49,8 @@ rust-solo/
 │   └── web2/                # Módulo web (versão 2)
 │       ├── mod.rs
 │       └── routes_login2.rs
+├── tests/                   # Testes de integração
+│   └── quick_dev.rs         # Testes rápidos de desenvolvimento
 ├── Cargo.toml               # Configuração do projeto
 └── README.md                # Este arquivo
 ```
@@ -94,6 +104,7 @@ O servidor iniciará em `http://127.0.0.1:8080`
 Endpoint de autenticação básica.
 
 **Request:**
+
 ```json
 {
   "name": "Danton",
@@ -102,6 +113,7 @@ Endpoint de autenticação básica.
 ```
 
 **Response (Sucesso - 200):**
+
 ```json
 {
   "result": {
@@ -110,9 +122,22 @@ Endpoint de autenticação básica.
 }
 ```
 
+_Nota: A resposta também define um cookie `user-1.exp.sign`._
+
 **Response (Erro - 401):**
+
 ```
 You dont have permission
+```
+
+#### GET `/hello/{name}`
+
+Endpoint simples de saudação.
+
+**Response (200):**
+
+```html
+Name is: {name}
 ```
 
 ### Exemplo com cURL
@@ -136,6 +161,8 @@ Invoke-RestMethod -Uri http://127.0.0.1:8080/api/login `
 
 - ✅ Servidor HTTP assíncrono
 - ✅ Endpoint de autenticação
+- ✅ Gerenciamento de Cookies
+- ✅ Middleware Customizado
 - ✅ Logging com tracing
 - ✅ Tratamento de erros customizado
 - ✅ Serialização/Deserialização JSON
@@ -157,6 +184,7 @@ Cada erro é convertido automaticamente em uma resposta HTTP apropriada através
 ### Logging
 
 O projeto utiliza o `tracing` para logging estruturado. Os logs são configurados no nível `INFO` e incluem informações sobre:
+
 - Endereço do servidor
 - Payloads de requisições
 - Eventos do sistema
@@ -166,7 +194,11 @@ O projeto utiliza o `tracing` para logging estruturado. Os logs são configurado
 ### Executar Testes
 
 ```bash
+# Executar todos os testes
 cargo test
+
+# Executar teste rápido de desenvolvimento
+cargo test --test quick_dev -- --nocapture
 ```
 
 ### Verificar Código
@@ -193,6 +225,7 @@ O binário compilado estará em `target/release/rust-solo`
 ## 📚 Aprendizados
 
 Este projeto demonstra:
+
 - Configuração básica de um servidor Axum
 - Roteamento HTTP
 - Handlers assíncronos
@@ -204,6 +237,7 @@ Este projeto demonstra:
 ## 🤝 Contribuindo
 
 Contribuições são bem-vindas! Sinta-se à vontade para:
+
 1. Fork o projeto
 2. Criar uma branch para sua feature (`git checkout -b feature/MinhaFeature`)
 3. Commit suas mudanças (`git commit -m 'Adiciona MinhaFeature'`)
