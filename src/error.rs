@@ -1,23 +1,17 @@
-use axum::{http::StatusCode, response::{IntoResponse, Response}};
-use serde::Deserialize;
-use tracing::error;
+use axum::{http::StatusCode, response::IntoResponse};
 
 pub type Result<T> = core::result::Result<T, Error>;
 
-
 impl IntoResponse for Error {
-    fn into_response(self) -> Response {
-        error!(Error = ?self, "Request failed");
+    fn into_response(self) -> axum::response::Response {
         let (status, body) = match self {
-            Error::LoginFail => (StatusCode::UNAUTHORIZED, "You are not allowed")
+            Error::LoginFail => (StatusCode::UNAUTHORIZED, "not allowed"),
         };
 
         (status, body).into_response()
     }
 }
 
-#[derive(Debug, Deserialize)]
 pub enum Error {
     LoginFail,
 }
-
